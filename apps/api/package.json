@@ -10,8 +10,12 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@types/node": "^12.7.4",
     "nodemon": "^1.19.2",
     "sucrase": "^3.10.1",
     "typescript": "^3.6.2"
+  },
+  "dependencies": {
+    "graphql-yoga": "^1.18.3"
   }
 }
