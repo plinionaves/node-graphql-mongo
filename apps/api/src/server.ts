@@ -9,6 +9,12 @@ const USERS = [
 ]
 
 const resolvers = {
+  User: {
+    name: (parent) => {
+      console.log('Parent: ', parent)
+      return 'User: ' + parent.name
+    }
+  },
   Query: {
     users: () => USERS
   },
