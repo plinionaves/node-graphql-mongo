@@ -5,7 +5,7 @@ const typeDefs = resolve(__dirname, 'schema.graphql')
 
 const USERS = [
   { id: 1, name: 'Tony Stark', email: 'tony@avengers.com' },
-  { id: 2, name: 'Spider Man', email: 'spider@avengers.com' }
+  { id: 2, name: 'Spider Man', email: 'spider@avengers.com' },
 ]
 
 const resolvers = {
@@ -13,10 +13,10 @@ const resolvers = {
     name: (parent): string => {
       console.log('Parent: ', parent)
       return 'User: ' + parent.name
-    }
+    },
   },
   Query: {
-    users: (): typeof USERS => USERS
+    users: (): typeof USERS => USERS,
   },
   Mutation: {
     createUser: (parent, args): typeof USERS[0] => {
@@ -24,17 +24,17 @@ const resolvers = {
       const { data } = args
       const user = {
         ...data,
-        id: USERS.length + 1
+        id: USERS.length + 1,
       }
       USERS.push(user)
       return user
-    }
-  }
+    },
+  },
 }
 
 const server = new GraphQLServer({
   resolvers,
-  typeDefs
+  typeDefs,
 })
 
 export default server
