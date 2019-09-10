@@ -10,16 +10,16 @@ const USERS = [
 
 const resolvers = {
   User: {
-    name: (parent) => {
+    name: (parent): string => {
       console.log('Parent: ', parent)
       return 'User: ' + parent.name
     }
   },
   Query: {
-    users: () => USERS
+    users: (): typeof USERS => USERS
   },
   Mutation: {
-    createUser: (parent, args, ctx, info) => {
+    createUser: (parent, args): typeof USERS[0] => {
       console.log('args: ', args)
       const { data } = args
       const user = {
