@@ -6,3 +6,10 @@ services:
     build:
       context: ./apps/api
       dockerfile: Dockerfile
+
+  mongo:
+    container_name: mongo
+    image: mongo:4
+    environment:
+      MONGO_INITDB_ROOT_USERNAME:
+      MONGO_INITDB_ROOT_PASSWORD:
