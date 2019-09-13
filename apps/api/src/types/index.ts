@@ -1,3 +1,4 @@
+export * from './modelsTypes'
 export * from './orderItemTypes'
 export * from './orderTypes'
 export * from './productTypes'
