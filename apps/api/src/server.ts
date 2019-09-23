@@ -1,6 +1,7 @@
 import { resolve } from 'path'
 import { GraphQLServer } from 'graphql-yoga'
 import { models as db } from './models'
+import { AuthDirective } from './directives'
 import { catchErrorsMiddleware } from './middlewares'
 import resolvers from './resolvers'
 
@@ -11,6 +12,9 @@ const server = new GraphQLServer({
   typeDefs,
   context: { db },
   middlewares: [catchErrorsMiddleware],
+  schemaDirectives: {
+    auth: AuthDirective,
+  },
 })
 
 export default server
