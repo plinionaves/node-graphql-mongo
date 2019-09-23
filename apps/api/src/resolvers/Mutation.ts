@@ -1,13 +1,15 @@
-import { hash } from 'bcryptjs'
+import { compare, hash } from 'bcryptjs'
 import { sign } from 'jsonwebtoken'
 import {
   ProductCreateInput,
   ProductByIdInput,
   ProductUpdateInput,
   Resolver,
+  UserSignInInput,
   UserSignUpInput,
 } from '../types'
 import { checkExistence } from '../utils'
+import { CustomError } from '../errors'
 
 const createProduct: Resolver<ProductCreateInput> = (_, args, { db }) => {
   const { Product } = db
@@ -40,6 +42,30 @@ const deleteProduct: Resolver<ProductByIdInput> = async (_, args, { db }) => {
   return Product.findByIdAndDelete(_id)
 }
 
+const signin: Resolver<UserSignInInput> = async (_, args, { db }) => {
+  const { User } = db
+  const { email, password } = args.data
+  const error = new CustomError(
+    'Invalid Credentials!',
+    'INVALID_CREDENTIALS_ERROR',
+  )
+
+  const user = await User.findOne({ email })
+  if (!user) {
+    throw error
+  }
+
+  const isValid = await compare(password, user.password)
+  if (!isValid) {
+    throw error
+  }
+
+  const { _id: sub, role } = user
+  const token = sign({ sub, role }, process.env.JWT_SECRET, { expiresIn: '2h' })
+
+  return { token, user }
+}
+
 const signup: Resolver<UserSignUpInput> = async (_, args, { db }) => {
   const { User } = db
   const { data } = args
@@ -60,5 +86,6 @@ export default {
   createProduct,
   updateProduct,
   deleteProduct,
+  signin,
   signup,
 }
