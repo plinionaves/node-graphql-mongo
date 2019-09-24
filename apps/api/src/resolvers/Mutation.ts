@@ -1,13 +1,14 @@
 import { compare, hash } from 'bcryptjs'
 import {
-  ProductCreateInput,
   ProductByIdInput,
+  ProductCreateInput,
+  ProductDocument,
   ProductUpdateInput,
   Resolver,
   UserSignInInput,
   UserSignUpInput,
 } from '../types'
-import { checkExistence, issueToken } from '../utils'
+import { findDocument, issueToken } from '../utils'
 import { CustomError } from '../errors'
 
 const createProduct: Resolver<ProductCreateInput> = (_, args, { db }) => {
@@ -18,27 +19,26 @@ const createProduct: Resolver<ProductCreateInput> = (_, args, { db }) => {
 }
 
 const updateProduct: Resolver<ProductUpdateInput> = async (_, args, { db }) => {
-  const { Product } = db
   const { _id, data } = args
-  await checkExistence({
+  const product = await findDocument<ProductDocument>({
     db,
     model: 'Product',
     field: '_id',
     value: _id,
   })
-  return Product.findByIdAndUpdate(_id, data, { new: true })
+  Object.keys(data).forEach(prop => (product[prop] = data[prop]))
+  return product.save()
 }
 
 const deleteProduct: Resolver<ProductByIdInput> = async (_, args, { db }) => {
-  const { Product } = db
   const { _id } = args
-  await checkExistence({
+  const product = await findDocument<ProductDocument>({
     db,
     model: 'Product',
     field: '_id',
     value: _id,
   })
-  return Product.findByIdAndDelete(_id)
+  return product.remove()
 }
 
 const signin: Resolver<UserSignInInput> = async (_, args, { db }) => {
