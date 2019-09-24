@@ -43,6 +43,15 @@ class AuthDirective extends SchemaDirectiveVisitor {
         throw new CustomError('Invalid token!', 'INVALID_TOKEN_ERROR', error)
       }
 
+      const { role: expectedRole } = this.args
+      const { role: userRole } = ctx.authUser
+
+      if (expectedRole && expectedRole !== userRole) {
+        throw new CustomError('Unauthorized!', 'UNAUTHORIZED_ERROR', {
+          detail: `Required '${expectedRole}' level!`,
+        })
+      }
+
       return resolver.apply(this, [_, args, ctx, info])
     }
   }
