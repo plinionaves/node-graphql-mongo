@@ -35,3 +35,7 @@ export interface OrderCreateArgs {
     items: OrderItemCreateInput[]
   }
 }
+
+export interface OrderDeleteArgs {
+  _id: Schema.Types.ObjectId
+}
