@@ -13,7 +13,7 @@ import {
   UserSignUpInput,
   UserRole,
 } from '../types'
-import { findDocument, issueToken } from '../utils'
+import { findDocument, findOrderItem, issueToken } from '../utils'
 import { CustomError } from '../errors'
 
 const createProduct: Resolver<ProductCreateInput> = (_, args, { db }) => {
@@ -147,6 +147,14 @@ const updateOrder: Resolver<OrderUpdateArgs> = async (
   })
 
   const user = !isAdmin ? userId : data.user || order.user
+
+  const { itemsToDelete = [] } = args.data
+
+  const foundItemsToDelete = itemsToDelete.map(orderItemId =>
+    findOrderItem(order.items, orderItemId, 'delete'),
+  )
+
+  foundItemsToDelete.forEach(orderItem => orderItem.remove())
 
   order.user = user
 
