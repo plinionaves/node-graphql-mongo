@@ -1,4 +1,4 @@
-import { Schema } from 'mongoose'
+import { Types } from 'mongoose'
 import { Models, UserRole } from '.'
 
 export interface CheckExistenceOptions {
@@ -13,6 +13,6 @@ export interface CheckExistenceOptions {
 }
 
 export interface TokenPayload {
-  sub: Schema.Types.ObjectId
+  sub: Types.ObjectId
   role: UserRole
 }
