@@ -3,6 +3,7 @@ import {
   OrderCreateArgs,
   OrderDeleteArgs,
   OrderDocument,
+  OrderUpdateArgs,
   ProductByIdInput,
   ProductCreateInput,
   ProductDocument,
@@ -127,6 +128,31 @@ const deleteOrder: Resolver<OrderDeleteArgs> = async (
   return order.remove()
 }
 
+const updateOrder: Resolver<OrderUpdateArgs> = async (
+  _,
+  args,
+  { db, authUser },
+) => {
+  const { data, _id } = args
+  const { _id: userId, role } = authUser
+  const isAdmin = role === UserRole.ADMIN
+
+  const where = !isAdmin ? { _id, user: userId } : null
+  const order = await findDocument<OrderDocument>({
+    db,
+    model: 'Order',
+    field: '_id',
+    value: _id,
+    where,
+  })
+
+  const user = !isAdmin ? userId : data.user || order.user
+
+  order.user = user
+
+  return order.save()
+}
+
 export default {
   createProduct,
   updateProduct,
@@ -134,5 +160,6 @@ export default {
   signin,
   signup,
   createOrder,
+  updateOrder,
   deleteOrder,
 }
