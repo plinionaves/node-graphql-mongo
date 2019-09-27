@@ -149,7 +149,12 @@ const updateOrder: Resolver<OrderUpdateArgs> = async (
 
   const user = !isAdmin ? userId : data.user || order.user
 
-  const { itemsToUpdate = [], itemsToDelete = [], itemsToAdd = [] } = args.data
+  const {
+    itemsToUpdate = [],
+    itemsToDelete = [],
+    itemsToAdd = [],
+    status,
+  } = args.data
 
   const foundItemsToUpdate = itemsToUpdate.map(orderItem =>
     findOrderItem(order.items, orderItem._id, 'update'),
@@ -179,7 +184,11 @@ const updateOrder: Resolver<OrderUpdateArgs> = async (
     order.items.push(itemToAdd)
   })
 
+  const total = order.items.reduce((sum, item) => sum + item.total, 0)
+
   order.user = user
+  order.status = status || order.status
+  order.total = total
 
   return order.save()
 }
