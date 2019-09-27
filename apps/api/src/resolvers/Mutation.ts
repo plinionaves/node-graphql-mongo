@@ -1,4 +1,5 @@
 import { compare, hash } from 'bcryptjs'
+import { Types } from 'mongoose'
 import {
   OrderCreateArgs,
   OrderDeleteArgs,
@@ -148,7 +149,7 @@ const updateOrder: Resolver<OrderUpdateArgs> = async (
 
   const user = !isAdmin ? userId : data.user || order.user
 
-  const { itemsToUpdate = [], itemsToDelete = [] } = args.data
+  const { itemsToUpdate = [], itemsToDelete = [], itemsToAdd = [] } = args.data
 
   const foundItemsToUpdate = itemsToUpdate.map(orderItem =>
     findOrderItem(order.items, orderItem._id, 'update'),
@@ -162,6 +163,21 @@ const updateOrder: Resolver<OrderUpdateArgs> = async (
     orderItem.set(itemsToUpdate[index]),
   )
   foundItemsToDelete.forEach(orderItem => orderItem.remove())
+
+  itemsToAdd.forEach(itemToAdd => {
+    const foundItem = order.items.find(item =>
+      (item.product as Types.ObjectId).equals(itemToAdd.product),
+    )
+
+    if (foundItem) {
+      return foundItem.set({
+        quantity: foundItem.quantity + itemToAdd.quantity,
+        total: foundItem.total + itemToAdd.total,
+      })
+    }
+
+    order.items.push(itemToAdd)
+  })
 
   order.user = user
 
