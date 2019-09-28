@@ -5,26 +5,26 @@ import {
   OrderDeleteArgs,
   OrderDocument,
   OrderUpdateArgs,
-  ProductByIdInput,
-  ProductCreateInput,
+  ProductByIdArgs,
+  ProductCreateArgs,
   ProductDocument,
-  ProductUpdateInput,
+  ProductUpdateArgs,
   Resolver,
-  UserSignInInput,
-  UserSignUpInput,
+  UserSignInArgs,
+  UserSignUpArgs,
   UserRole,
 } from '../types'
 import { findDocument, findOrderItem, issueToken } from '../utils'
 import { CustomError } from '../errors'
 
-const createProduct: Resolver<ProductCreateInput> = (_, args, { db }) => {
+const createProduct: Resolver<ProductCreateArgs> = (_, args, { db }) => {
   const { Product } = db
   const { data } = args
   const product = new Product(data)
   return product.save()
 }
 
-const updateProduct: Resolver<ProductUpdateInput> = async (_, args, { db }) => {
+const updateProduct: Resolver<ProductUpdateArgs> = async (_, args, { db }) => {
   const { _id, data } = args
   const product = await findDocument<ProductDocument>({
     db,
@@ -36,7 +36,7 @@ const updateProduct: Resolver<ProductUpdateInput> = async (_, args, { db }) => {
   return product.save()
 }
 
-const deleteProduct: Resolver<ProductByIdInput> = async (_, args, { db }) => {
+const deleteProduct: Resolver<ProductByIdArgs> = async (_, args, { db }) => {
   const { _id } = args
   const product = await findDocument<ProductDocument>({
     db,
@@ -47,7 +47,7 @@ const deleteProduct: Resolver<ProductByIdInput> = async (_, args, { db }) => {
   return product.remove()
 }
 
-const signin: Resolver<UserSignInInput> = async (_, args, { db }) => {
+const signin: Resolver<UserSignInArgs> = async (_, args, { db }) => {
   const { User } = db
   const { email, password } = args.data
   const error = new CustomError(
@@ -71,7 +71,7 @@ const signin: Resolver<UserSignInInput> = async (_, args, { db }) => {
   return { token, user }
 }
 
-const signup: Resolver<UserSignUpInput> = async (_, args, { db }) => {
+const signup: Resolver<UserSignUpArgs> = async (_, args, { db }) => {
   const { User } = db
   const { data } = args
 
