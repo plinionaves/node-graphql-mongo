@@ -1,18 +1,22 @@
 import {
+  OrderByIdArgs,
+  OrderDocument,
+  PaginationArgs,
   ProductByIdArgs,
+  ProductDocument,
   Resolver,
   UserRole,
-  OrderByIdArgs,
-  ProductDocument,
-  OrderDocument,
 } from '../types'
 import { findDocument } from '../utils'
 
-const orders: Resolver<{}> = (_, args, { db, authUser }) => {
+const orders: Resolver<PaginationArgs> = (_, args, { db, authUser }) => {
+  const { skip = 0, limit = 10 } = args
   const { _id, role } = authUser
   const { Order } = db
   const conditions = role === UserRole.USER ? { user: _id } : {}
   return Order.find(conditions)
+    .skip(skip)
+    .limit(limit <= 20 ? limit : 20)
 }
 
 const order: Resolver<OrderByIdArgs> = (_, args, { db, authUser }) => {
@@ -28,7 +32,13 @@ const order: Resolver<OrderByIdArgs> = (_, args, { db, authUser }) => {
   })
 }
 
-const products: Resolver<{}> = (_, args, { db }) => db.Product.find()
+const products: Resolver<PaginationArgs> = (_, args, { db }) => {
+  const { skip = 0, limit = 10 } = args
+  const { Product } = db
+  return Product.find()
+    .skip(skip)
+    .limit(limit <= 20 ? limit : 20)
+}
 
 const product: Resolver<ProductByIdArgs> = async (_, args, { db }) => {
   const { _id } = args
