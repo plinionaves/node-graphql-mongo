@@ -31,6 +31,7 @@ const order: Resolver<OrderByIdArgs> = (_, args, { db, authUser }) => {
 
 const products: Resolver<PaginationArgs> = (_, args, { db }) => {
   const { Product } = db
+  console.log('Where: ', args.where)
   return paginateAndSort(Product.find(), args)
 }
 
