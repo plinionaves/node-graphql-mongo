@@ -107,28 +107,9 @@ const operators = [
   { name: 'Options', op: '$options' },
 ]
 
-/*
-{
-  priceGt: 6,
-  priceLt: 10,
-  OR: [
-    { nameEq: "Coca-Cola 2l" },
-  ]
-}
-
-['priceGt', 'priceLt', 'OR']
-
-{
-  price: { $gt: 6, $lt: 10 },
-  $or: [
-    { 
-      name: { $eq: 'Coca-Cola 2l' },
-    },
-  ]
-}
-*/
-
-const buildConditions = (where: Record<string, any>): Record<string, any> =>
+const buildConditions = (
+  where: Record<string, any> = {},
+): Record<string, any> =>
   Object.keys(where).reduce((conditions, whereKey) => {
     const operator = operators.find(({ name }) =>
       new RegExp(`${name}$`).test(whereKey),
@@ -150,18 +131,6 @@ const buildConditions = (where: Record<string, any>): Record<string, any> =>
       [fieldName]: fieldValue,
     }
   }, {})
-
-console.log(
-  'Build Conditions: ',
-  require('util').inspect(
-    buildConditions({
-      priceGt: 6,
-      priceLt: 10,
-      OR: [{ nameEq: 'Coca-Cola 2l' }],
-    }),
-    { depth: null },
-  ),
-)
 
 export {
   buildConditions,
