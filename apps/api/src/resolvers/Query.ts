@@ -37,14 +37,19 @@ const products: Resolver<PaginationArgs> = (_, args, { db }) => {
   return paginateAndSort(Product.find(conditions), args)
 }
 
-const product: Resolver<ProductByIdArgs> = async (_, args, { db }) => {
+const product: Resolver<ProductByIdArgs> = async (_, args, { db }, info) => {
   const { _id } = args
-  return findDocument<ProductDocument>({
+  const product = await findDocument<ProductDocument>({
     db,
     model: 'Product',
     field: '_id',
     value: _id,
   })
+
+  console.log('Info: ', info.fieldNodes[0].selectionSet.selections)
+  console.log('Product: ', product)
+
+  return product
 }
 
 export default {
