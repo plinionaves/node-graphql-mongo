@@ -10,6 +10,7 @@ export interface FindDocumentOptions {
   where?: Record<string, any>
   errorCode?: string
   extensions?: Record<string, any>
+  select?: string
 }
 
 export interface TokenPayload {

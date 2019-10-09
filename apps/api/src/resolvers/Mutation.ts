@@ -15,7 +15,7 @@ import {
   UserSignUpArgs,
   UserRole,
 } from '../types'
-import { findDocument, findOrderItem, issueToken } from '../utils'
+import { findDocument, findOrderItem, getFields, issueToken } from '../utils'
 import { CustomError } from '../errors'
 
 const createProduct: Resolver<ProductCreateArgs> = (_, args, { db }) => {
@@ -25,25 +25,37 @@ const createProduct: Resolver<ProductCreateArgs> = (_, args, { db }) => {
   return product.save()
 }
 
-const updateProduct: Resolver<ProductUpdateArgs> = async (_, args, { db }) => {
+const updateProduct: Resolver<ProductUpdateArgs> = async (
+  _,
+  args,
+  { db },
+  info,
+) => {
   const { _id, data } = args
   const product = await findDocument<ProductDocument>({
     db,
     model: 'Product',
     field: '_id',
     value: _id,
+    select: getFields(info),
   })
   Object.keys(data).forEach(prop => (product[prop] = data[prop]))
   return product.save()
 }
 
-const deleteProduct: Resolver<ProductByIdArgs> = async (_, args, { db }) => {
+const deleteProduct: Resolver<ProductByIdArgs> = async (
+  _,
+  args,
+  { db },
+  info,
+) => {
   const { _id } = args
   const product = await findDocument<ProductDocument>({
     db,
     model: 'Product',
     field: '_id',
     value: _id,
+    select: getFields(info),
   })
   return product.remove()
 }
@@ -122,6 +134,7 @@ const deleteOrder: Resolver<OrderDeleteArgs> = async (
   _,
   args,
   { db, authUser, pubsub },
+  info,
 ) => {
   const { _id } = args
   const { _id: userId, role } = authUser
@@ -133,6 +146,7 @@ const deleteOrder: Resolver<OrderDeleteArgs> = async (
     field: '_id',
     value: _id,
     where,
+    select: getFields(info, { include: ['user'] }),
   })
 
   await order.remove()
@@ -149,6 +163,7 @@ const updateOrder: Resolver<OrderUpdateArgs> = async (
   _,
   args,
   { db, authUser, pubsub },
+  info,
 ) => {
   const { data, _id } = args
   const { _id: userId, role } = authUser
@@ -161,6 +176,7 @@ const updateOrder: Resolver<OrderUpdateArgs> = async (
     field: '_id',
     value: _id,
     where,
+    select: getFields(info, { include: ['user', 'items', 'status'] }),
   })
 
   const user = !isAdmin ? userId : data.user || order.user

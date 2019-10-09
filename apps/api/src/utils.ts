@@ -25,6 +25,7 @@ const findDocument = async <T extends Document>(
     message,
     errorCode,
     extensions,
+    select,
   } = opts
 
   if (field === '_id' && !isMongoId(value)) {
@@ -36,6 +37,7 @@ const findDocument = async <T extends Document>(
 
   const document = await ((db[model] as unknown) as Model<T>)
     .findOne(where || { [field]: value })
+    .select(select)
     .exec()
 
   if (!document) {
