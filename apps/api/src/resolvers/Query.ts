@@ -7,7 +7,12 @@ import {
   Resolver,
   UserRole,
 } from '../types'
-import { buildConditions, findDocument, paginateAndSort } from '../utils'
+import {
+  buildConditions,
+  findDocument,
+  getFields,
+  paginateAndSort,
+} from '../utils'
 
 const orders: Resolver<PaginationArgs> = (_, args, { db, authUser }) => {
   const { _id, role } = authUser
@@ -46,7 +51,7 @@ const product: Resolver<ProductByIdArgs> = async (_, args, { db }, info) => {
     value: _id,
   })
 
-  console.log('Info: ', info.fieldNodes[0].selectionSet.selections)
+  console.log('Info: ', getFields(info))
   console.log('Product: ', product)
 
   return product

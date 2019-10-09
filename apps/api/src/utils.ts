@@ -1,7 +1,10 @@
+import { GraphQLResolveInfo } from 'graphql'
+import { fieldsList } from 'graphql-fields-list'
 import { SignOptions, sign } from 'jsonwebtoken'
 import { Document, DocumentQuery, Model, Types } from 'mongoose'
 import {
   FindDocumentOptions,
+  GetFieldsOptions,
   OrderItemSubdocument,
   PaginationArgs,
   TokenPayload,
@@ -147,11 +150,25 @@ const buildConditions = (
     }
   }, {})
 
+const getFields = (
+  info: GraphQLResolveInfo,
+  options?: GetFieldsOptions,
+): string => {
+  let fields = fieldsList(info)
+  if (options) {
+    const { include = [], skip = [] } = options
+    fields = fields.concat(include)
+    fields = fields.filter(f => !skip.includes(f))
+  }
+  return fields.join(' ')
+}
+
 export {
   buildConditions,
   buildOrderByResolvers,
   findDocument,
   findOrderItem,
+  getFields,
   isMongoId,
   issueToken,
   paginateAndSort,

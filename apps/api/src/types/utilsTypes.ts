@@ -23,3 +23,8 @@ export interface PaginationArgs {
   orderBy: string[]
   where: Record<string, any>
 }
+
+export interface GetFieldsOptions {
+  include?: string[]
+  skip?: string[]
+}
