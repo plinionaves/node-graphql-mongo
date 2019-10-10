@@ -29,7 +29,7 @@ const batchLoadFn = async (
 const createLoaders = (modelsNames: (keyof Models)[]): DataLoaders =>
   modelsNames.reduce(
     (loaders, modelName) => {
-      const loaderName = `${modelName.toLowerCase()}Loader` // userLoader
+      const loaderName = `${modelName.toLowerCase()}Loader`
       return {
         ...loaders,
         [loaderName]: new DataLoader<DataLoaderParam, Document>(
