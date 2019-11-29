@@ -2,6 +2,8 @@ version: "3.4"
 
 services:
   api:
+    build:
+      target: dev-stage
     ports:
       - "4000:4000"
     command: npm run dev
