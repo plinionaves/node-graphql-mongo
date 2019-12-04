@@ -7,10 +7,12 @@ services:
       context: ./apps/api
       dockerfile: Dockerfile
     environment:
+      NODE_ENV:
       JWT_SECRET:
       MONGO_URI:
       REDIS_HOST:
       REDIS_PORT:
+      CLIENT_HOSTS:
 
   mongo:
     container_name: mongo
