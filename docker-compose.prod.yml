@@ -16,3 +16,9 @@ services:
       TZ: ${MONGO_TIMEZONE:-America/Sao_Paulo}
     volumes:
       - ~/data/mongo/db:/data/db
+
+  redis:
+    command: redis-server --append-only yes --requirepass ${REDIS_PASSWORD}
+    restart: unless-stopped
+    volumes:
+      - ~/data/redis/db:/data
