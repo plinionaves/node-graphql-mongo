@@ -3,3 +3,16 @@ version: "3.4"
 services:
   api:
     command: npm start
+
+  mongo:
+    command: --auth --timeStampFormat ctime
+    restart: unless-stopped
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
+    environment:
+      TZ: ${MONGO_TIMEZONE:-America/Sao_Paulo}
+    volumes:
+      - ~/data/mongo/db:/data/db
