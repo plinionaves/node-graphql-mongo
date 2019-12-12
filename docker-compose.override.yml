@@ -1,6 +1,12 @@
 version: "3.4"
 
 services:
+  traefik:
+    command:
+      - --api.insecure
+      - --providers.docker
+      - --providers.docker.exposedByDefault=false
+
   api:
     build:
       target: dev-stage
