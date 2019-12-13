@@ -7,6 +7,10 @@ services:
       - --log.level=DEBUG
       - --providers.docker
       - --providers.docker.exposedByDefault=false
+    labels:
+      # Auth
+      - traefik.http.middlewares.authtraefik.basicauth.users=${TRAEFIK_AUTH}
+      - traefik.http.routers.traefik.middlewares=authtraefik
 
   api:
     command: npm start
