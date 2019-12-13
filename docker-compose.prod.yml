@@ -1,6 +1,13 @@
 version: "3.4"
 
 services:
+  traefik:
+    command:
+      - --api
+      - --log.level=DEBUG
+      - --providers.docker
+      - --providers.docker.exposedByDefault=false
+
   api:
     command: npm start
 
