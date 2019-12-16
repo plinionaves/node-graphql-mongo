@@ -24,6 +24,12 @@ services:
       # Auth
       - traefik.http.middlewares.authtraefik.basicauth.users=${TRAEFIK_AUTH}
       - traefik.http.routers.traefik.middlewares=authtraefik
+      # Middleware Redirect
+      - traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https
+      # Global redirect to https
+      - traefik.http.routers.redirs.rule=hostregexp(`{host:.+}`)
+      - traefik.http.routers.redirs.entrypoints=web
+      - traefik.http.routers.redirs.middleware=redirect-to-https
     volumes:
       - /home/acme.json:/acme.json
 
