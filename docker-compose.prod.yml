@@ -30,6 +30,8 @@ services:
       - traefik.http.routers.redirs.rule=hostregexp(`{host:.+}`)
       - traefik.http.routers.redirs.entrypoints=web
       - traefik.http.routers.redirs.middleware=redirect-to-https
+    ports:
+      - "443:443"
     volumes:
       - /home/acme.json:/acme.json
 
