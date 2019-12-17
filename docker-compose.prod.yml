@@ -29,7 +29,7 @@ services:
       # Global redirect to https
       - traefik.http.routers.redirs.rule=hostregexp(`{host:.+}`)
       - traefik.http.routers.redirs.entrypoints=web
-      - traefik.http.routers.redirs.middleware=redirect-to-https
+      - traefik.http.routers.redirs.middlewares=redirect-to-https
     ports:
       - "443:443"
     volumes:
@@ -57,7 +57,7 @@ services:
       - /home/data/mongo/db:/data/db
 
   redis:
-    command: redis-server --append-only yes --requirepass ${REDIS_PASSWORD}
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD}
     restart: unless-stopped
     volumes:
       - /home/data/redis/db:/data

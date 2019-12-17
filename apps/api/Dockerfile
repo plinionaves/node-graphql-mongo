@@ -13,4 +13,6 @@ FROM dev-stage AS build-stage
 
 RUN npm run build
 
+RUN npm config set unsafe-perm true
+
 RUN npm i -g pm2@4
