@@ -11,6 +11,7 @@ import {
   ProductDocument,
   ProductUpdateArgs,
   Resolver,
+  UploadCreateArgs,
   UserSignInArgs,
   UserSignUpArgs,
   UserRole,
@@ -232,6 +233,12 @@ const updateOrder: Resolver<OrderUpdateArgs> = async (
   return order
 }
 
+const singleUpload: Resolver<UploadCreateArgs> = async (_, args) => {
+  const file = await args.data.file
+
+  return file.filename
+}
+
 export default {
   createProduct,
   updateProduct,
@@ -241,4 +248,5 @@ export default {
   createOrder,
   updateOrder,
   deleteOrder,
+  singleUpload,
 }

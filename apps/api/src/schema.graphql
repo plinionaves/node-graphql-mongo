@@ -1,5 +1,6 @@
 directive @auth(role: UserRole) on FIELD_DEFINITION
 scalar DateTime
+scalar Upload
 
 # User
 enum UserRole {
@@ -214,6 +215,10 @@ input OrderItemUpdateInput {
   total: Float!
 }
 
+input UploadCreateInput {
+  file: Upload!
+}
+
 enum MutationType {
   CREATED
   UPDATED
@@ -247,6 +252,7 @@ type Mutation {
   updateProduct(data: ProductUpdateInput!, _id: ID!): Product!
     @auth(role: ADMIN)
   deleteProduct(_id: ID!): Product! @auth(role: ADMIN)
+  singleUpload(data: UploadCreateInput!): String
 }
 
 type Subscription {

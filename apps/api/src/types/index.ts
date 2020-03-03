@@ -1,4 +1,5 @@
 export * from './contextTypes'
+export * from './fileTypes'
 export * from './loadersTypes'
 export * from './modelsTypes'
 export * from './orderItemTypes'
