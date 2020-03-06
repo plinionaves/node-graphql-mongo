@@ -234,9 +234,11 @@ const updateOrder: Resolver<OrderUpdateArgs> = async (
 }
 
 const singleUpload: Resolver<UploadCreateArgs> = async (_, args) => {
-  const file = await args.data.file
+  const { file } = await args.data
 
-  return file.filename
+  console.log(file)
+
+  return file
 }
 
 export default {

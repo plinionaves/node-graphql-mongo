@@ -215,6 +215,10 @@ input OrderItemUpdateInput {
   total: Float!
 }
 
+type File {
+  filename: String!
+}
+
 input UploadCreateInput {
   file: Upload!
 }
@@ -252,7 +256,7 @@ type Mutation {
   updateProduct(data: ProductUpdateInput!, _id: ID!): Product!
     @auth(role: ADMIN)
   deleteProduct(_id: ID!): Product! @auth(role: ADMIN)
-  singleUpload(data: UploadCreateInput!): String
+  singleUpload(data: UploadCreateInput!): File!
 }
 
 type Subscription {
