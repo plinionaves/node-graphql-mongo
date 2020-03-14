@@ -1,7 +1,7 @@
+import { FileUpload } from 'graphql-upload'
+
 export interface UploadCreateInput {
-  file: {
-    filename: string
-  }
+  file: FileUpload
 }
 
 export interface UploadCreateArgs {
