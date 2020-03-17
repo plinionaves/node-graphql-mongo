@@ -28,6 +28,7 @@ services:
       REDIS_PORT:
       REDIS_PASSWORD:
       CLIENT_HOSTS:
+      CDN_ENDPOINT:
     labels:
       - traefik.enable=true
       - traefik.http.routers.api.rule=Host(`api.${DOMAIN}`)

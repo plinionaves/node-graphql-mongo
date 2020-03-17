@@ -32,13 +32,13 @@ export class UploadService {
     }
   }
 
-  async processUpload(upload: FileUpload): Promise<File> {
+  async processUpload(upload: Promise<FileUpload>): Promise<File> {
     const {
       createReadStream,
       encoding,
       mimetype,
       filename: originalname,
-    } = upload
+    } = await upload
 
     const _id = new Types.ObjectId()
     const filename = `${_id}-${originalname}`

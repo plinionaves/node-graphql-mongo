@@ -18,6 +18,7 @@ import {
 } from '../types'
 import { findDocument, findOrderItem, getFields, issueToken } from '../utils'
 import { CustomError } from '../errors'
+import { uploadService } from '../services'
 
 const createProduct: Resolver<ProductCreateArgs> = (_, args, { db }) => {
   const { Product } = db
@@ -234,9 +235,7 @@ const updateOrder: Resolver<OrderUpdateArgs> = async (
 }
 
 const singleUpload: Resolver<UploadCreateArgs> = async (_, args) => {
-  const { file } = await args.data
-
-  console.log(file)
+  const file = await uploadService.processUpload(args.data.file)
 
   return file
 }

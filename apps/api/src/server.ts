@@ -1,5 +1,7 @@
 import { resolve } from 'path'
 import { GraphQLServer } from 'graphql-yoga'
+import express from 'express'
+
 import { context } from './config'
 import { AuthDirective } from './directives'
 import { catchErrorsMiddleware } from './middlewares'
@@ -16,5 +18,10 @@ const server = new GraphQLServer({
     auth: AuthDirective,
   },
 })
+
+server.use(
+  '/static',
+  express.static(resolve(__dirname, '..', 'tmp', 'uploads')),
+)
 
 export default server

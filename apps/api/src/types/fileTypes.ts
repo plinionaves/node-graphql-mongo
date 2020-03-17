@@ -16,7 +16,7 @@ export interface FileData extends Omit<File, 'url'> {
 }
 
 export interface UploadCreateInput {
-  file: FileUpload
+  file: Promise<FileUpload>
 }
 
 export interface UploadCreateArgs {

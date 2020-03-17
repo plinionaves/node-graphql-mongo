@@ -216,7 +216,12 @@ input OrderItemUpdateInput {
 }
 
 type File {
+  _id: ID!
   filename: String!
+  path: String!
+  mimetype: String!
+  encoding: String!
+  url: String!
 }
 
 input UploadCreateInput {
