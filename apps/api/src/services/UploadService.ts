@@ -1,9 +1,10 @@
 import fs from 'fs'
 import { resolve } from 'path'
 import { promisify } from 'util'
-import mkdirpCb from 'mkdirp'
 import { FileUpload } from 'graphql-upload'
 import { Types } from 'mongoose'
+import mkdirpCb from 'mkdirp'
+import sharp from 'sharp'
 
 import { File, FileData } from '../types'
 
@@ -42,7 +43,9 @@ export class UploadService {
 
     const _id = new Types.ObjectId()
     const filename = `${_id}-${originalname}`
-    const stream = createReadStream()
+    const resize = sharp().resize(400, 400)
+    const format = mimetype.includes('png') ? resize.png() : resize.jpeg()
+    const stream = createReadStream().pipe(format)
     const path = `static/${filename}`
 
     const fileData = {

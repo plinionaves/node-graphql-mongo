@@ -1,6 +1,6 @@
 import { FileUpload } from 'graphql-upload'
 import { Types } from 'mongoose'
-import { ReadStream } from 'fs'
+import { Sharp } from 'sharp'
 
 export interface File {
   _id: Types.ObjectId
@@ -12,7 +12,7 @@ export interface File {
 }
 
 export interface FileData extends Omit<File, 'url'> {
-  stream: ReadStream
+  stream: Sharp
 }
 
 export interface UploadCreateInput {
