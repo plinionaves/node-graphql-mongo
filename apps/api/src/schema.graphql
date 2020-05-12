@@ -38,6 +38,7 @@ type Product {
   description: String
   price: Float!
   unit: Unit!
+  photos: [File!]!
 }
 
 input ProductCreateInput {
@@ -222,10 +223,14 @@ type File {
   mimetype: String!
   encoding: String!
   url: String!
+  object: String!
+  objectId: ID!
 }
 
 input UploadCreateInput {
   file: Upload!
+  object: String!
+  objectId: ID!
 }
 
 enum MutationType {

@@ -1,10 +1,11 @@
 import { Document, Types } from 'mongoose'
-import { OmitId } from '.'
+import { FileDocument, OmitId } from '.'
 
 export interface Product {
   _id: Types.ObjectId
-  name: string
   description: string
+  name: string
+  photos: Types.DocumentArray<FileDocument>
   price: number
   unit: string
 }

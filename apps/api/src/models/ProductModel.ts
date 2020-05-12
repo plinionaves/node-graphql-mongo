@@ -11,6 +11,13 @@ const productSchema = new Schema({
     type: String,
     trim: true,
   },
+  photos: [
+    {
+      type: Schema.Types.ObjectId,
+      required: true,
+      ref: 'File',
+    },
+  ],
   price: {
     type: Number,
     required: true,
