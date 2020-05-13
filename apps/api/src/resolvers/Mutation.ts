@@ -1,6 +1,7 @@
 import { compare, hash } from 'bcryptjs'
 import { Types } from 'mongoose'
 import {
+  Models,
   MutationType,
   OrderCreateArgs,
   OrderDeleteArgs,
@@ -16,7 +17,13 @@ import {
   UserSignUpArgs,
   UserRole,
 } from '../types'
-import { findDocument, findOrderItem, getFields, issueToken } from '../utils'
+import {
+  capitilize,
+  findDocument,
+  findOrderItem,
+  getFields,
+  issueToken,
+} from '../utils'
 import { CustomError } from '../errors'
 import { uploadService } from '../services'
 
@@ -234,8 +241,25 @@ const updateOrder: Resolver<OrderUpdateArgs> = async (
   return order
 }
 
-const singleUpload: Resolver<UploadCreateArgs> = async (_, args) => {
-  const file = await uploadService.processUpload(args.data.file)
+const singleUpload: Resolver<UploadCreateArgs> = async (_, args, { db }) => {
+  const { File } = db
+  const { object, objectId } = args.data
+  const model = capitilize(object) as keyof Models
+
+  const document = await findDocument<ProductDocument>({
+    db,
+    model,
+    field: '_id',
+    value: objectId,
+    select: '_id photos',
+  })
+
+  const uploadedFile = await uploadService.processUpload(args.data.file)
+  const file = new File({ ...uploadedFile, object, objectId })
+  await file.save()
+
+  document.photos.push(file)
+  await document.save()
 
   return file
 }

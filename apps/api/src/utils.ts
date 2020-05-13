@@ -165,9 +165,18 @@ const getFields = (
   return fields.join(' ')
 }
 
+const capitilize = (str: string): string => {
+  if (typeof str !== 'string') {
+    return ''
+  }
+
+  return str.charAt(0).toUpperCase() + str.substr(1).toLowerCase()
+}
+
 export {
   buildConditions,
   buildOrderByResolvers,
+  capitilize,
   findDocument,
   findOrderItem,
   getFields,

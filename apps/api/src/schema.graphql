@@ -222,7 +222,7 @@ type File {
   path: String!
   mimetype: String!
   encoding: String!
-  url: String!
+  url: String
   object: String!
   objectId: ID!
 }
