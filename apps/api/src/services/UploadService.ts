@@ -10,7 +10,6 @@ import { File, FileData } from '../types'
 
 const exists = promisify(fs.access)
 const mkdirp = promisify(mkdirpCb)
-const { CDN_ENDPOINT } = process.env
 
 export class UploadService {
   private uploadDir: string
@@ -63,13 +62,12 @@ export class UploadService {
   private processUploadDevelopment(fileData: FileData): Promise<File> {
     const { filename, path, stream, ...rest } = fileData
 
-    const url = `${CDN_ENDPOINT}/${path}`
     const fullPath = `${this.uploadDir}/${filename}`
 
     return new Promise((resolve, reject): void => {
       stream
         .pipe(fs.createWriteStream(fullPath))
-        .on('finish', () => resolve({ ...rest, filename, url, path }))
+        .on('finish', () => resolve({ ...rest, filename, path }))
         .on('error', reject)
     })
   }

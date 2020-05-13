@@ -37,4 +37,8 @@ const fileSchema = new Schema({
   },
 })
 
+fileSchema.virtual('url').get(function(this: FileDocument) {
+  return `${process.env.CDN_ENDPOINT}/${this.path}`
+})
+
 export default model<FileDocument>('File', fileSchema)

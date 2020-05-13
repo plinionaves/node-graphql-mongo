@@ -10,7 +10,7 @@ export interface File {
   path: string
   mimetype: string
   encoding: string
-  url: string
+  url?: string
   object?: keyof Models
   objectId?: Types.ObjectId
 }
