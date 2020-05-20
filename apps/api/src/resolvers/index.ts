@@ -3,6 +3,7 @@ import Mutation from './Mutation'
 import Order from './Order'
 import OrderItem from './OrderItem'
 import OrderOrderByInput from './OrderOrderByInput'
+import Product from './Product'
 import ProductOrderByInput from './ProductOrderByInput'
 import Subscription from './Subscription'
 
@@ -12,6 +13,7 @@ export default {
   Order,
   OrderItem,
   OrderOrderByInput,
+  Product,
   ProductOrderByInput,
   Subscription,
 }
