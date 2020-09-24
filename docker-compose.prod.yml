@@ -44,7 +44,7 @@ services:
       - traefik.http.routers.api.entrypoints=websecure
 
   mongo:
-    command: --auth --timeStampFormat ctime
+    command: --auth --timeStampFormat iso8601-utc
     restart: unless-stopped
     logging:
       driver: json-file
