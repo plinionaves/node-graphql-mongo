@@ -36,6 +36,9 @@ services:
       - /home/acme.json:/acme.json
 
   api:
+    build:
+      args:
+        NODE_OPTIONS: --max_old_space_size=1024
     command: npm start
     environment:
       DO_SPACES_BUCKET:

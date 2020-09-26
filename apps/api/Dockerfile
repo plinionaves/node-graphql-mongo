@@ -1,4 +1,4 @@
-FROM node:10.16.3-alpine AS dev-stage
+FROM node:12.18.4-alpine AS dev-stage
 
 WORKDIR /usr/app
 
@@ -10,6 +10,8 @@ COPY . .
 
 
 FROM dev-stage AS build-stage
+
+ARG NODE_OPTIONS
 
 RUN npm run build
 
