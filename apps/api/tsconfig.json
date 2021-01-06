@@ -10,5 +10,5 @@
     "allowSyntheticDefaultImports": true,
     "outDir": "./dist"
   },
-  "include": ["src/**/*"]
+  "include": ["src/**/*", "node_modules/pagarme-js-types/index.d.ts"]
 }

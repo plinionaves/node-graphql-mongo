@@ -31,6 +31,7 @@
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-standard": "^4.0.1",
     "nodemon": "^1.19.2",
+    "pagarme-js-types": "^2.6.0",
     "prettier": "^1.18.2",
     "sucrase": "^3.10.1",
     "typescript": "^3.6.2"
@@ -47,6 +48,7 @@
     "jsonwebtoken": "^8.5.1",
     "mkdirp": "^0.5.1",
     "mongoose": "^5.7.0",
+    "pagarme": "^4.13.0",
     "sharp": "^0.25.2"
   }
 }
