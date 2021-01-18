@@ -22,5 +22,11 @@ module.exports = {
     '@typescript-eslint/member-delimiter-style': 'off',
     '@typescript-eslint/no-explicit-any': 'off',
     'no-useless-constructor': 'off',
+    '@typescript-eslint/explicit-function-return-type': [
+      'off',
+      {
+        allowConciseArrowFunctionExpressionsStartingWithVoid: true,
+      },
+    ],
   },
 }
