@@ -16,6 +16,20 @@ export class PagarmeAdapter implements PaymentGateway {
     throw new Error(`Method not implemented. ${data.paymentMethod}`)
   }
 
+  private async findCustomer(email: string, document: string) {
+    const client = await this.getClient()
+    const [splittedEmail] = email.split('@')
+    const customers = await client.customers.all({ email: splittedEmail }, null)
+    const regex = /\.|-|\//g
+    const documentNumber = document.replace(regex, '')
+
+    return customers.find(customer =>
+      customer.documents.some(
+        document => document.number.replace(regex, '') === documentNumber,
+      ),
+    )
+  }
+
   private getClient() {
     return pagarme.client.connect({ api_key: process.env.PAGARME_API_KEY })
   }
