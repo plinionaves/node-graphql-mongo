@@ -53,10 +53,12 @@ export interface PaymentTransactionRequest {
 
 export enum PaymentTransactionStatus {
   ANALYZING = 'ANALYZING',
+  AUTHORIZED = 'AUTHORIZED',
   CHARGED_BACK = 'CHARGED_BACK',
   PAID = 'PAID',
   PENDING = 'PENDING',
   PROCESSING = 'PROCESSING',
+  REFUNDED = 'REFUNDED',
   REFUSED = 'REFUSED',
   WAITING_PAYMENT = 'WAITING_PAYMENT',
 }

@@ -1,12 +1,13 @@
 /* eslint-disable @typescript-eslint/camelcase */
 
-import pagarme, { Transaction } from 'pagarme'
+import pagarme, { Transaction, TransactionStatus } from 'pagarme'
 
 import {
   PaymentGateway,
   PaymentMethod,
   PaymentTransactionRequest,
   PaymentTransactionResponse,
+  PaymentTransactionStatus,
 } from '../interfaces/PaymentGateway'
 
 export class PagarmeAdapter implements PaymentGateway {
@@ -43,6 +44,33 @@ export class PagarmeAdapter implements PaymentGateway {
 
       default:
         return 'credit_card'
+    }
+  }
+
+  private getTransactionStatus(status: TransactionStatus) {
+    switch (status) {
+      case 'analyzing':
+        return PaymentTransactionStatus.ANALYZING
+      case 'authorized':
+        return PaymentTransactionStatus.AUTHORIZED
+      case 'chargedback':
+        return PaymentTransactionStatus.CHARGED_BACK
+      case 'paid':
+        return PaymentTransactionStatus.PAID
+      case 'pending_refund':
+      case 'pending_review':
+        return PaymentTransactionStatus.PENDING
+      case 'processing':
+        return PaymentTransactionStatus.PROCESSING
+      case 'refunded':
+        return PaymentTransactionStatus.REFUNDED
+      case 'refused':
+        return PaymentTransactionStatus.REFUSED
+      case 'waiting_payment':
+        return PaymentTransactionStatus.WAITING_PAYMENT
+
+      default:
+        return PaymentTransactionStatus.PROCESSING
     }
   }
 }
