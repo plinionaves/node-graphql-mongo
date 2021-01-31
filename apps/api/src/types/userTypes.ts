@@ -7,6 +7,9 @@ export enum UserRole {
 
 export interface User {
   _id: Types.ObjectId
+  birthday: Date
+  cpf: string
+  phones: string[]
   name: string
   email: string
   password: string
@@ -23,7 +26,12 @@ interface UserSignInInput {
 }
 
 export interface UserSignUpArgs {
-  data: UserSignInInput & { name: string }
+  data: UserSignInInput & {
+    birthday: string
+    cpf: string
+    phones: string[]
+    name: string
+  }
 }
 
 export interface UserSignInArgs {

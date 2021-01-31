@@ -2,6 +2,19 @@ import { Schema, model } from 'mongoose'
 import { UserDocument } from '../types'
 
 const userSchema = new Schema({
+  birthday: {
+    type: Date,
+    required: true,
+  },
+  cpf: {
+    type: String,
+    required: true,
+    trim: true,
+  },
+  phones: {
+    type: [String],
+    required: true,
+  },
   name: {
     type: String,
     required: true,

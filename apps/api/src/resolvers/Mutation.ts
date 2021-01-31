@@ -1,4 +1,5 @@
 import { compare, hash } from 'bcryptjs'
+import { parse } from 'date-fns'
 import { Types } from 'mongoose'
 import {
   Models,
@@ -97,9 +98,11 @@ const signup: Resolver<UserSignUpArgs> = async (_, args, { db }) => {
   const { User } = db
   const { data } = args
 
+  const birthday = parse(data.birthday, 'dd-MM-yyyy', new Date())
   const password = await hash(data.password, 10)
   const user = await new User({
     ...data,
+    birthday,
     password,
   }).save()
 
