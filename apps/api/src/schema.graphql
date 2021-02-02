@@ -3,6 +3,43 @@ scalar Date
 scalar DateTime
 scalar Upload
 
+# Address
+type Address {
+  _id: ID!
+  complement: String
+  city: String!
+  neighborhood: String!
+  number: Int!
+  receiver: String!
+  state: String!
+  street: String!
+  zipcode: String!
+}
+
+input AddressCreateInput {
+  complement: String
+  city: String!
+  neighborhood: String!
+  number: Int!
+  receiver: String!
+  state: String!
+  street: String!
+  zipcode: String!
+  user: ID
+}
+
+input AddressUpdateInput {
+  complement: String
+  city: String
+  neighborhood: String
+  number: Int
+  receiver: String
+  state: String
+  street: String
+  zipcode: String
+  user: ID
+}
+
 # User
 enum UserRole {
   USER
@@ -17,6 +54,7 @@ type User {
   name: String!
   email: String!
   role: UserRole!
+  addresses: [Address!]!
 }
 
 input UserSignInInput {
@@ -274,6 +312,9 @@ type Mutation {
     @auth(role: ADMIN)
   deleteProduct(_id: ID!): Product! @auth(role: ADMIN)
   singleUpload(data: UploadCreateInput!): File! @auth(role: ADMIN)
+  createAddress(data: AddressCreateInput): Address! @auth
+  updateAddress(data: AddressUpdateInput, _id: ID!): Address! @auth
+  deleteAddress(_id: ID!): Address! @auth
 }
 
 type Subscription {
