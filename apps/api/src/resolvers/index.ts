@@ -6,6 +6,7 @@ import OrderOrderByInput from './OrderOrderByInput'
 import Product from './Product'
 import ProductOrderByInput from './ProductOrderByInput'
 import Subscription from './Subscription'
+import User from './User'
 
 export default {
   Query,
@@ -16,4 +17,5 @@ export default {
   Product,
   ProductOrderByInput,
   Subscription,
+  User,
 }
