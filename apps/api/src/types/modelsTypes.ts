@@ -1,7 +1,14 @@
 import { Model } from 'mongoose'
-import { FileDocument, OrderDocument, ProductDocument, UserDocument } from '.'
+import {
+  AddressDocument,
+  FileDocument,
+  OrderDocument,
+  ProductDocument,
+  UserDocument,
+} from '.'
 
 export interface Models {
+  Address: Model<AddressDocument>
   File: Model<FileDocument>
   Order: Model<OrderDocument>
   Product: Model<ProductDocument>
