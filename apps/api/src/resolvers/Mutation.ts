@@ -2,6 +2,10 @@ import { compare, hash } from 'bcryptjs'
 import { parse } from 'date-fns'
 import { Types } from 'mongoose'
 import {
+  AddressCreateArgs,
+  AddressUpdateArgs,
+  AddressDocument,
+  AddressByIdArgs,
   Models,
   MutationType,
   OrderCreateArgs,
@@ -27,6 +31,69 @@ import {
 } from '../utils'
 import { CustomError } from '../errors'
 import { uploadService } from '../services'
+
+const createAddress: Resolver<AddressCreateArgs> = (
+  _,
+  args,
+  { authUser, db },
+) => {
+  const { Address } = db
+  const { data } = args
+  const { _id, role } = authUser
+  const user = role === UserRole.USER ? _id : data.user || _id
+  const address = new Address({
+    ...data,
+    user,
+  })
+  return address.save()
+}
+
+const updateAddress: Resolver<AddressUpdateArgs> = async (
+  _,
+  args,
+  { authUser, db },
+  info,
+) => {
+  const { _id, data } = args
+  const { _id: userId, role } = authUser
+  const isAdmin = role === UserRole.ADMIN
+  const where = !isAdmin ? { _id, user: userId } : null
+
+  const address = await findDocument<AddressDocument>({
+    db,
+    model: 'Address',
+    field: '_id',
+    value: _id,
+    select: getFields(info, { include: ['user'] }),
+    where,
+  })
+
+  Object.keys(data).forEach(prop => (address[prop] = data[prop]))
+
+  const user = !isAdmin ? userId : data.user || address.user
+  address.user = user
+
+  return address.save()
+}
+
+const deleteAddress: Resolver<AddressByIdArgs> = async (
+  _,
+  args,
+  { authUser, db },
+  info,
+) => {
+  const { _id } = args
+  const where = { _id, user: authUser._id }
+  const address = await findDocument<AddressDocument>({
+    db,
+    model: 'Address',
+    field: '_id',
+    value: _id,
+    select: getFields(info),
+    where,
+  })
+  return address.remove()
+}
 
 const createProduct: Resolver<ProductCreateArgs> = (_, args, { db }) => {
   const { Product } = db
@@ -268,6 +335,9 @@ const singleUpload: Resolver<UploadCreateArgs> = async (_, args, { db }) => {
 }
 
 export default {
+  createAddress,
+  updateAddress,
+  deleteAddress,
   createProduct,
   updateProduct,
   deleteProduct,
