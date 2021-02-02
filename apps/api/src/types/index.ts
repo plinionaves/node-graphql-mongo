@@ -1,3 +1,4 @@
+export * from './addressTypes'
 export * from './contextTypes'
 export * from './fileTypes'
 export * from './loadersTypes'
