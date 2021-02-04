@@ -148,6 +148,31 @@ input ProductWhereInput {
   NOR: [ProductWhereInput!]
 }
 
+# Payment
+enum PaymentTransactionStatus {
+  ANALYZING
+  AUTHORIZED
+  CHARGED_BACK
+  PAID
+  PENDING
+  PROCESSING
+  REFUNDED
+  REFUSED
+  WAITING_PAYMENT
+}
+
+enum PaymentMethod {
+  CREDIT_CARD
+  BANK_SLIP
+}
+
+type Payment {
+  method: PaymentMethod!
+  status: PaymentTransactionStatus!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
 # Order
 enum OrderStatus {
   WAITING_PAYMENT
@@ -164,6 +189,7 @@ type Order {
   total: Float!
   status: OrderStatus!
   items: [OrderItem!]!
+  payments: [Payment!]!
   createdAt: DateTime!
   updatedAt: DateTime!
 }
