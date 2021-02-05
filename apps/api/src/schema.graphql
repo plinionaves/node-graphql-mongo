@@ -173,6 +173,14 @@ type Payment {
   updatedAt: DateTime!
 }
 
+input OrderPayInput {
+  address: ID!
+  cardHash: String!
+  installments: Int!
+  paymentMethod: PaymentMethod!
+  user: ID
+}
+
 # Order
 enum OrderStatus {
   WAITING_PAYMENT
@@ -333,6 +341,7 @@ type Mutation {
   createOrder(data: OrderCreateInput): Order! @auth
   updateOrder(data: OrderUpdateInput!, _id: ID!): Order! @auth
   deleteOrder(_id: ID!): Order! @auth
+  payOrder(data: OrderPayInput!, _id: ID!): Order! @auth
   createProduct(data: ProductCreateInput!): Product! @auth(role: ADMIN)
   updateProduct(data: ProductUpdateInput!, _id: ID!): Product!
     @auth(role: ADMIN)
