@@ -11,6 +11,7 @@ import {
   OrderCreateArgs,
   OrderDeleteArgs,
   OrderDocument,
+  OrderPayArgs,
   OrderUpdateArgs,
   ProductByIdArgs,
   ProductCreateArgs,
@@ -209,6 +210,29 @@ const createOrder: Resolver<OrderCreateArgs> = async (
   return order
 }
 
+const payOrder: Resolver<OrderPayArgs> = async (
+  _,
+  args,
+  { db, authUser },
+  info,
+) => {
+  const { _id } = args
+  const { _id: userId, role } = authUser
+  const isAdmin = role === UserRole.ADMIN
+  const whereOrder = !isAdmin ? { _id, user: userId } : null
+
+  const order = await findDocument<OrderDocument>({
+    db,
+    model: 'Order',
+    field: '_id',
+    value: _id,
+    where: whereOrder,
+    select: getFields(info),
+  })
+
+  return order
+}
+
 const deleteOrder: Resolver<OrderDeleteArgs> = async (
   _,
   args,
@@ -345,6 +369,7 @@ export default {
   signup,
   createOrder,
   updateOrder,
+  payOrder,
   deleteOrder,
   singleUpload,
 }
