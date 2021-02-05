@@ -176,7 +176,7 @@ type Payment {
 input OrderPayInput {
   address: ID!
   cardHash: String!
-  installments: Int!
+  installments: Int
   paymentMethod: PaymentMethod!
   user: ID
 }

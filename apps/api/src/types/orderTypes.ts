@@ -5,6 +5,7 @@ import {
   OrderItemUpdateInput,
   User,
 } from '.'
+import { PaymentMethod } from '../interfaces'
 
 export enum OrderStatus {
   WAITING_PAYMENT,
@@ -23,6 +24,14 @@ export interface Order {
   items: Types.DocumentArray<OrderItemSubdocument>
   createdAt: string
   updatedAt: string
+}
+
+interface OrderPayInput {
+  address: string
+  cardHash: string
+  installments?: number
+  paymentMethod: PaymentMethod
+  user?: string
 }
 
 export interface OrderDocument extends Order, Document {
@@ -53,4 +62,8 @@ export interface OrderDeleteArgs {
 
 export interface OrderUpdateArgs extends OrderDeleteArgs {
   data: OrderUpdateInput
+}
+
+export interface OrderPayArgs extends OrderDeleteArgs {
+  data: OrderPayInput
 }
