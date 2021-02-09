@@ -7,6 +7,7 @@ export interface FindDocumentOptions {
   field?: string
   value?: any
   message?: string
+  populate?: string[]
   where?: Record<string, any>
   errorCode?: string
   extensions?: Record<string, any>

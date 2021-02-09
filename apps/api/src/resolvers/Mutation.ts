@@ -229,6 +229,7 @@ const payOrder: Resolver<OrderPayArgs> = async (
     model: 'Order',
     field: '_id',
     value: _id,
+    populate: ['items.product'],
     where: whereOrder,
     select: getFields(info),
   })

@@ -23,6 +23,7 @@ const findDocument = async <T extends Document>(
     value,
     where,
     message,
+    populate = [],
     errorCode,
     extensions,
     select,
@@ -35,10 +36,13 @@ const findDocument = async <T extends Document>(
     )
   }
 
-  const document = await ((db[model] as unknown) as Model<T>)
+  const query = ((db[model] as unknown) as Model<T>)
     .findOne(where || { [field]: value })
     .select(select)
-    .exec()
+
+  populate.forEach(path => query.populate(path))
+
+  const document = await query.exec()
 
   if (!document) {
     throw new CustomError(
