@@ -13,6 +13,8 @@ import {
   OrderDocument,
   OrderPayArgs,
   OrderUpdateArgs,
+  PaymentGatewayAcquirer,
+  Product,
   ProductByIdArgs,
   ProductCreateArgs,
   ProductDocument,
@@ -32,8 +34,14 @@ import {
   issueToken,
 } from '../utils'
 import { CustomError } from '../errors'
-import { PaymentTransactionStatus } from '../interfaces'
-import { uploadService } from '../services'
+import {
+  PaymentCustomer,
+  PaymentCustomerAddress,
+  PaymentShipping,
+  PaymentTransactionItem,
+  PaymentTransactionStatus,
+} from '../interfaces'
+import { paymentsService, uploadService } from '../services'
 
 const createAddress: Resolver<AddressCreateArgs> = (
   _,
@@ -231,7 +239,7 @@ const payOrder: Resolver<OrderPayArgs> = async (
     value: _id,
     populate: ['items.product'],
     where: whereOrder,
-    select: getFields(info),
+    select: getFields(info, { include: ['items'] }),
   })
 
   const orderPayment = await Payment.findOne({
@@ -275,8 +283,56 @@ const payOrder: Resolver<OrderPayArgs> = async (
     value: user,
   })
 
-  console.log('address', addressDocument)
-  console.log('user', userDocument)
+  const { cardHash, installments, paymentMethod } = data
+  const address: PaymentCustomerAddress = {
+    ...addressDocument.toObject(),
+    country: 'br',
+  }
+  const amount = order.items.reduce((sum, item) => sum + item.total, 0)
+  const customer: PaymentCustomer = {
+    id: userDocument._id + '',
+    name: userDocument.name,
+    email: userDocument.email,
+    cpf: userDocument.cpf,
+    birthday: userDocument.birthday,
+    phoneNumbers: userDocument.phones,
+  }
+  const items: PaymentTransactionItem[] = order.items.map(item => {
+    const product = item.product as Product
+
+    return {
+      id: product._id + '',
+      name: product.name,
+      price: product.price,
+      quantity: item.quantity,
+      tangible: true, // todo
+    }
+  })
+  const shipping: PaymentShipping = {
+    address,
+    deliveryDate: new Date(), // todo
+    fee: 6, // todo
+    receiver: address.receiver,
+  }
+
+  const transaction = await paymentsService.makePayment({
+    address,
+    amount,
+    customer,
+    installments,
+    paymentMethod,
+    cardHash,
+    items,
+    shipping,
+  })
+
+  await new Payment({
+    order: order._id,
+    gateway: PaymentGatewayAcquirer.PAGARME,
+    method: paymentMethod,
+    status: transaction.status,
+    transactionId: transaction.id,
+  }).save()
 
   return order
 }
