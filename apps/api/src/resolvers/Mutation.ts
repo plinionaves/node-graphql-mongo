@@ -12,6 +12,7 @@ import {
   OrderDeleteArgs,
   OrderDocument,
   OrderPayArgs,
+  OrderStatus,
   OrderUpdateArgs,
   PaymentGatewayAcquirer,
   Product,
@@ -223,7 +224,7 @@ const createOrder: Resolver<OrderCreateArgs> = async (
 const payOrder: Resolver<OrderPayArgs> = async (
   _,
   args,
-  { db, authUser },
+  { db, authUser, pubsub },
   info,
 ) => {
   const { Payment } = db
@@ -334,7 +335,16 @@ const payOrder: Resolver<OrderPayArgs> = async (
     transactionId: transaction.id,
   }).save()
 
-  return order
+  if (transaction.status === PaymentTransactionStatus.PAID) {
+    order.status = OrderStatus.IN_QUEUE
+
+    pubsub.publish('ORDER_UPDATED', {
+      mutation: MutationType.UPDATED,
+      node: order,
+    })
+  }
+
+  return order.save()
 }
 
 const deleteOrder: Resolver<OrderDeleteArgs> = async (
