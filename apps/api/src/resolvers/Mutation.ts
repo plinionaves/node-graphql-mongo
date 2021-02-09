@@ -31,6 +31,7 @@ import {
   issueToken,
 } from '../utils'
 import { CustomError } from '../errors'
+import { PaymentTransactionStatus } from '../interfaces'
 import { uploadService } from '../services'
 
 const createAddress: Resolver<AddressCreateArgs> = (
@@ -216,6 +217,7 @@ const payOrder: Resolver<OrderPayArgs> = async (
   { db, authUser },
   info,
 ) => {
+  const { Payment } = db
   const { _id } = args
   const { _id: userId, role } = authUser
   const isAdmin = role === UserRole.ADMIN
@@ -229,6 +231,29 @@ const payOrder: Resolver<OrderPayArgs> = async (
     where: whereOrder,
     select: getFields(info),
   })
+
+  const orderPayment = await Payment.findOne({
+    order: order._id,
+    status: {
+      $nin: [
+        PaymentTransactionStatus.CHARGED_BACK,
+        PaymentTransactionStatus.REFUNDED,
+        PaymentTransactionStatus.REFUSED,
+      ],
+    },
+  })
+    .select('createdAt status')
+    .sort('-createdAt')
+
+  if (orderPayment) {
+    const { createdAt, status } = orderPayment
+
+    throw new CustomError(
+      'This order already has a payment',
+      'ORDER_PAID_ERROR',
+      { createdAt, status },
+    )
+  }
 
   return order
 }
