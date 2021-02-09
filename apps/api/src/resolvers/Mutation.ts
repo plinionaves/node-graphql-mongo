@@ -19,6 +19,7 @@ import {
   ProductUpdateArgs,
   Resolver,
   UploadCreateArgs,
+  UserDocument,
   UserSignInArgs,
   UserSignUpArgs,
   UserRole,
@@ -218,7 +219,7 @@ const payOrder: Resolver<OrderPayArgs> = async (
   info,
 ) => {
   const { Payment } = db
-  const { _id } = args
+  const { _id, data } = args
   const { _id: userId, role } = authUser
   const isAdmin = role === UserRole.ADMIN
   const whereOrder = !isAdmin ? { _id, user: userId } : null
@@ -254,6 +255,27 @@ const payOrder: Resolver<OrderPayArgs> = async (
       { createdAt, status },
     )
   }
+
+  const user = !isAdmin ? userId : data.user || userId
+  const whereAddress = !isAdmin ? { _id: data.address, user } : null
+
+  const addressDocument = await findDocument<AddressDocument>({
+    db,
+    model: 'Address',
+    field: '_id',
+    value: data.address,
+    where: whereAddress,
+  })
+
+  const userDocument = await findDocument<UserDocument>({
+    db,
+    model: 'User',
+    field: '_id',
+    value: user,
+  })
+
+  console.log('address', addressDocument)
+  console.log('user', userDocument)
 
   return order
 }
