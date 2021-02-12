@@ -52,7 +52,7 @@ export class PagarmeAdapter implements PaymentGateway {
         state: data.address.state,
         street: data.address.street,
         street_number: data.address.number + '',
-        zipcode: data.address.zipcode,
+        zipcode: data.address.zipcode.replace(/-|\./g, ''),
         neighborhood: data.address.neighborhood,
       }
 
@@ -88,7 +88,9 @@ export class PagarmeAdapter implements PaymentGateway {
             email: data.customer.email,
             external_id: data.customer.id + '',
             name: data.customer.name,
-            phone_numbers: data.customer.phoneNumbers,
+            phone_numbers: data.customer.phoneNumbers.map(
+              phone => `+55${phone.replace(/\s|-/g, '')}`,
+            ),
             type: customerType,
           }
 
@@ -143,6 +145,27 @@ export class PagarmeAdapter implements PaymentGateway {
 
   private createError(error: PagarmeError) {
     switch (error.parameter_name) {
+      case 'card_expiration_date':
+        return new CustomError(
+          'Invalid card expiration date!',
+          'INVALID_CARD_EXPIRATION_DATE_ERROR',
+        )
+
+      case 'card_cvv':
+        return new CustomError('Invalid card cvv!', 'INVALID_CARD_CVV_ERROR')
+
+      case 'card_holder_name':
+        return new CustomError(
+          'Invalid card holder name!',
+          'INVALID_CARD_HOLDER_NAME_ERROR',
+        )
+
+      case 'card_number':
+        return new CustomError(
+          'Invalid card number!',
+          'INVALID_CARD_NUMBER_ERROR',
+        )
+
       case 'card_hash':
         return new CustomError('Invalid card hash!', 'INVALID_CARD_HASH_ERROR')
 
