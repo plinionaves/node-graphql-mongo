@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>myFood - Card Hash</title>
+
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div id="app" class="app">
+      <header class="l-header">
+        <h1>myFood</h1>
+      </header>
+
+      <main class="l-content">
+        <form id="form" class="c-form">
+          <label class="c-form__label" for="cardnumber">Número do cartão</label>
+          <input
+            class="c-form__input"
+            type="text"
+            name="cardnumber"
+            autocomplete="cc-number"
+            id="frmCCNum"
+          />
+
+          <label class="c-form__label" for="ccname">Nome</label>
+          <input
+            class="c-form__input"
+            type="text"
+            name="ccname"
+            autocomplete="cc-name"
+            id="frmNameCC"
+          />
+
+          <label class="c-form__label" for="cc-exp">Data de expiração</label>
+          <input
+            class="c-form__input"
+            type="text"
+            name="cc-exp"
+            autocomplete="cc-exp"
+            id="frmCCExp"
+          />
+
+          <label class="c-form__label" for="cc-exp">CVV</label>
+          <input
+            class="c-form__input"
+            type="text"
+            name="cvc"
+            autocomplete="cc-csc"
+            id="frmCCCVC"
+          />
+
+          <button class="c-form__button" type="submit">Gerar Card Hash</button>
+        </form>
+
+        <div id="output" class="c-output"></div>
+      </main>
+
+      <footer class="l-footer"></footer>
+    </div>
+
+    <script src="https://assets.pagar.me/pagarme-js/4.11/pagarme.min.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
