@@ -1,3 +1,5 @@
+import { PaymentGatewayAcquirer } from '../types'
+
 export enum PaymentMethod {
   BANK_SLIP = 'BANK_SLIP',
   CREDIT_CARD = 'CREDIT_CARD',
@@ -49,6 +51,7 @@ export interface PaymentTransactionRequest {
   items: PaymentTransactionItem[]
   paymentMethod: PaymentMethod
   shipping?: PaymentShipping
+  webhookURL?: string
 }
 
 export enum PaymentTransactionStatus {
@@ -68,8 +71,25 @@ export interface PaymentTransactionResponse {
   status: PaymentTransactionStatus
 }
 
+export enum PaymentObject {
+  SUBSCRIPTION = 'SUBSCRIPTION',
+  TRANSACTION = 'TRANSACTION',
+}
+
+export interface WebhookPayload {
+  currentStatus: PaymentTransactionStatus
+  gateway: PaymentGatewayAcquirer
+  object: PaymentObject
+  objectId: string
+}
+
 export interface PaymentGateway {
   transaction(
     data: PaymentTransactionRequest,
   ): Promise<PaymentTransactionResponse>
+
+  processWebhook(
+    headers: Record<string, string>,
+    body: Record<string, string>,
+  ): WebhookPayload
 }
