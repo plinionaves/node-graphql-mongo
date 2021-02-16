@@ -27,6 +27,7 @@ const findDocument = async <T extends Document>(
     errorCode,
     extensions,
     select,
+    sort,
   } = opts
 
   if (field === '_id' && !isMongoId(value)) {
@@ -39,6 +40,7 @@ const findDocument = async <T extends Document>(
   const query = ((db[model] as unknown) as Model<T>)
     .findOne(where || { [field]: value })
     .select(select)
+    .sort(sort)
 
   populate.forEach(path => query.populate(path))
 

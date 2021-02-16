@@ -12,6 +12,7 @@ export interface FindDocumentOptions {
   errorCode?: string
   extensions?: Record<string, any>
   select?: string
+  sort?: string
 }
 
 export interface TokenPayload {
