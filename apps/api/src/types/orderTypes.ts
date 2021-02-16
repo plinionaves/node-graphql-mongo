@@ -8,12 +8,12 @@ import {
 import { PaymentMethod } from '../interfaces'
 
 export enum OrderStatus {
-  WAITING_PAYMENT,
-  IN_QUEUE,
-  PREPARING,
-  READY,
-  ON_THE_WAY,
-  DELIVERED,
+  WAITING_PAYMENT = 'WAITING_PAYMENT',
+  IN_QUEUE = 'IN_QUEUE',
+  PREPARING = 'PREPARING',
+  READY = 'READY',
+  ON_THE_WAY = 'ON_THE_WAY',
+  DELIVERED = 'DELIVERED',
 }
 
 export interface Order {

@@ -240,7 +240,7 @@ const payOrder: Resolver<OrderPayArgs> = async (
     value: _id,
     populate: ['items.product'],
     where: whereOrder,
-    select: getFields(info, { include: ['items'] }),
+    select: getFields(info, { include: ['items', 'user'] }),
   })
 
   const orderPayment = await Payment.findOne({
