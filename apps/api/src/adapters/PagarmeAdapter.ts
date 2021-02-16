@@ -6,18 +6,23 @@ import pagarme, {
   Country,
   CustomerType,
   DocumentType,
+  Postback,
   Transaction,
   TransactionStatus,
 } from 'pagarme'
+import qs from 'qs'
 
 import { CustomError } from '../errors'
 import {
   PaymentGateway,
   PaymentMethod,
+  PaymentObject,
   PaymentTransactionRequest,
   PaymentTransactionResponse,
   PaymentTransactionStatus,
-} from '../interfaces/PaymentGateway'
+  WebhookPayload,
+} from '../interfaces'
+import { PaymentGatewayAcquirer } from '../types'
 
 interface PagarmeError {
   message: string
@@ -40,6 +45,44 @@ interface PagarmeErrorPayload {
 }
 
 export class PagarmeAdapter implements PaymentGateway {
+  get postbackURL() {
+    return process.env.WEBHOOKS_BASE_URL + '/pagarme'
+  }
+
+  processWebhook(
+    headers: Record<string, string>,
+    body: Record<string, string>,
+  ): WebhookPayload {
+    const postback: Postback = body as any
+    const signature =
+      headers['x-hub-signature'] &&
+      headers['x-hub-signature'].replace('sha1=', '')
+    const isVerified = (pagarme as any).postback.verifySignature(
+      process.env.PAGARME_API_KEY,
+      qs.stringify(postback),
+      signature,
+    )
+
+    return isVerified
+      ? {
+          currentStatus: this.getTransactionStatus(postback.current_status),
+          gateway: PaymentGatewayAcquirer.PAGARME,
+          object: this.getPaymentObject(postback.object),
+          objectId: postback[postback.object].id,
+        }
+      : null
+  }
+
+  private getPaymentObject(object: 'subscription' | 'transaction') {
+    switch (object) {
+      case 'subscription':
+        return PaymentObject.SUBSCRIPTION
+
+      default:
+        return PaymentObject.TRANSACTION
+    }
+  }
+
   async transaction(
     data: PaymentTransactionRequest,
   ): Promise<PaymentTransactionResponse> {
@@ -111,6 +154,7 @@ export class PagarmeAdapter implements PaymentGateway {
           unit_price: item.price * 100,
         })),
         payment_method: this.getPaymentMethod(data.paymentMethod) as any,
+        postback_url: this.postbackURL,
         shipping: {
           address,
           fee: data.shipping.fee * 100,
