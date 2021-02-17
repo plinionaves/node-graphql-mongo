@@ -1,4 +1,5 @@
 export * from './addressTypes'
+export * from './cardTypes'
 export * from './contextTypes'
 export * from './fileTypes'
 export * from './loadersTypes'

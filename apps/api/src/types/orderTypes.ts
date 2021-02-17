@@ -28,9 +28,11 @@ export interface Order {
 
 interface OrderPayInput {
   address: string
-  cardHash: string
+  cardHash?: string
+  cardId?: string
   installments?: number
   paymentMethod: PaymentMethod
+  saveCard?: boolean
   user?: string
 }
 
