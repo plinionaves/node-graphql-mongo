@@ -1,4 +1,4 @@
-import { PaymentGatewayAcquirer } from '../types'
+import { Card, PaymentGatewayAcquirer } from '../types'
 
 export enum PaymentMethod {
   BANK_SLIP = 'BANK_SLIP',
@@ -46,10 +46,12 @@ export interface PaymentTransactionRequest {
   address: PaymentCustomerAddress
   amount: number
   cardHash?: string
+  cardId?: string
   customer: PaymentCustomer
   installments?: number
   items: PaymentTransactionItem[]
   paymentMethod: PaymentMethod
+  saveCard?: boolean
   shipping?: PaymentShipping
   webhookURL?: string
 }
@@ -68,6 +70,7 @@ export enum PaymentTransactionStatus {
 
 export interface PaymentTransactionResponse {
   id: string
+  card?: Card
   status: PaymentTransactionStatus
 }
 

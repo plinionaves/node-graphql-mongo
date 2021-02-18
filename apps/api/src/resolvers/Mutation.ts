@@ -284,7 +284,7 @@ const payOrder: Resolver<OrderPayArgs> = async (
     value: user,
   })
 
-  const { cardHash, installments, paymentMethod } = data
+  const { cardHash, cardId, installments, paymentMethod, saveCard } = data
   const address: PaymentCustomerAddress = {
     ...addressDocument.toObject(),
     country: 'br',
@@ -319,11 +319,13 @@ const payOrder: Resolver<OrderPayArgs> = async (
   const transaction = await paymentsService.makePayment({
     address,
     amount,
+    cardHash,
+    cardId,
     customer,
     installments,
-    paymentMethod,
-    cardHash,
     items,
+    paymentMethod,
+    saveCard,
     shipping,
   })
 

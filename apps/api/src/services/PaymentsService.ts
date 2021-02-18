@@ -1,3 +1,4 @@
+import { CardsService } from './CardsService'
 import { pubsub } from '../config'
 import {
   PaymentGateway,
@@ -13,14 +14,43 @@ import {
   PaymentDocument,
 } from '../types'
 import { findDocument } from '../utils'
+import { CustomError } from '../errors'
 
 export class PaymentsService {
-  constructor(private paymentGateway: PaymentGateway) {}
+  constructor(
+    private cardsService: CardsService,
+    private paymentGateway: PaymentGateway,
+  ) {}
 
-  makePayment(
+  async makePayment(
     request: PaymentTransactionRequest,
   ): Promise<PaymentTransactionResponse> {
-    return this.paymentGateway.transaction(request)
+    if (request.cardId) {
+      const foundCard = await this.cardsService.find({ _id: request.cardId })
+
+      if (!foundCard) {
+        throw new CustomError(
+          `Card with id '${request.cardId}' not found`,
+          'NOT_FOUND_ERROR',
+        )
+      }
+
+      if (foundCard.user.toString() !== request.customer.id) {
+        throw new CustomError('Unauthorized!', 'UNAUTHORIZED_ERROR', {
+          detail: `This card does not belong to the current user`,
+        })
+      }
+
+      request.cardId = foundCard.externalId
+    }
+
+    const response = await this.paymentGateway.transaction(request)
+
+    if (request.cardHash && request.saveCard) {
+      await this.cardsService.create(response.card)
+    }
+
+    return response
   }
 
   async processWebhook(
