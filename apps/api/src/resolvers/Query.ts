@@ -14,6 +14,13 @@ import {
   paginateAndSort,
 } from '../utils'
 
+const cards: Resolver<PaginationArgs> = (_, args, { db, authUser }, info) => {
+  const { _id } = authUser
+  const { Card } = db
+  const query = Card.find({ user: _id }).select(getFields(info))
+  return paginateAndSort(query, args)
+}
+
 const orders: Resolver<PaginationArgs> = (_, args, { db, authUser }, info) => {
   const { _id, role } = authUser
   const { Order } = db
@@ -57,6 +64,7 @@ const product: Resolver<ProductByIdArgs> = (_, args, { db }, info) => {
 }
 
 export default {
+  cards,
   orders,
   order,
   products,

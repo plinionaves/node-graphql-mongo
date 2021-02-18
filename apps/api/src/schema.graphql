@@ -320,7 +320,34 @@ enum MutationType {
   DELETED
 }
 
+# Card
+enum PaymentGatewayAcquirer {
+  PAGARME
+  STRIPE
+}
+
+type Card {
+  _id: ID!
+  brand: String!
+  expirationDate: String!
+  externalId: String!
+  firstDigits: String!
+  gateway: PaymentGatewayAcquirer
+  holderName: String!
+  lastDigits: String!
+}
+
+enum CardOrderByInput {
+  brand_ASC
+  brand_DESC
+  createdAt_ASC
+  createdAt_DESC
+  expirationDate_ASC
+  expirationDate_DESC
+}
+
 type Query {
+  cards(skip: Int, limit: Int, order: [CardOrderByInput!]): [Card!]! @auth
   orders(
     skip: Int
     limit: Int
