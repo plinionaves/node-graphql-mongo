@@ -7,7 +7,6 @@ import pagarme, {
   CustomerType,
   DocumentType,
   Postback,
-  Transaction,
   TransactionStatus,
 } from 'pagarme'
 import qs from 'qs'
@@ -22,7 +21,7 @@ import {
   PaymentTransactionStatus,
   WebhookPayload,
 } from '../interfaces'
-import { PaymentGatewayAcquirer } from '../types'
+import { Card, PaymentGatewayAcquirer } from '../types'
 
 interface PagarmeError {
   message: string
@@ -41,6 +40,23 @@ interface PagarmeErrorPayload {
     method: 'DELETE' | 'GET' | 'POST' | 'PUT'
     status: number
     url: string
+  }
+}
+
+type Transaction = pagarme.Transaction & {
+  card: {
+    object: 'card'
+    id: string
+    date_created: string
+    date_updated: string
+    brand: string
+    holder_name: string
+    first_digits: string
+    last_digits: string
+    country: string
+    fingerprint: string
+    valid: boolean
+    expiration_date: string
   }
 }
 
@@ -138,13 +154,14 @@ export class PagarmeAdapter implements PaymentGateway {
           }
 
       const client = await this.getClient()
-      const transaction = await client.transactions.create({
+      const transaction = (await client.transactions.create({
         amount: data.amount * 100,
         billing: {
           address,
           name: data.customer.name,
         },
         card_hash: data.cardHash,
+        card_id: data.cardId,
         customer,
         items: data.items.map(item => ({
           id: item.id + '',
@@ -161,10 +178,25 @@ export class PagarmeAdapter implements PaymentGateway {
           name: data.shipping.receiver,
           delivery_date: format(data.shipping.deliveryDate, 'yyyy-MM-dd'),
         },
-      })
+      })) as Transaction
+
+      const card: Card =
+        transaction.payment_method === 'credit_card'
+          ? {
+              brand: transaction.card.brand,
+              gateway: PaymentGatewayAcquirer.PAGARME,
+              expirationDate: transaction.card.expiration_date,
+              externalId: transaction.card.id,
+              firstDigits: transaction.card.first_digits,
+              holderName: transaction.card.holder_name,
+              lastDigits: transaction.card.last_digits,
+              user: data.customer.id + '',
+            }
+          : null
 
       return {
         id: transaction.id + '',
+        card,
         status: this.getTransactionStatus(transaction.status),
       }
     } catch (error) {
